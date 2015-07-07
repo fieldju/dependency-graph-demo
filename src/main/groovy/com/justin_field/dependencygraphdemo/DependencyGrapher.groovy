@@ -57,7 +57,6 @@ class DependencyGrapher {
             throw new IllegalArgumentException("Node: $node, is not in the dependency map")
         }
 
-        visited.add(node)
         if (depth == 0) {
             println node
         } else if (depth > 0) {
@@ -73,6 +72,7 @@ class DependencyGrapher {
         deps.each { String dependency ->
             // I made and assumption that if we detect a loop that we can just print the looped dep and not recurse
             if (dependencies.containsKey(dependency) && ! visited.contains(dependency)) {
+                visited.add(node)
                 printGraph(dependency, depth + 1, visited)
             } else {
                 print('|  ' * depth)
