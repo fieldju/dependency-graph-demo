@@ -1,5 +1,5 @@
 # dependency-graph-demo
-Given a dependency graph in the form of a file that contains entries '"X->Y"', stating that X depends on Y. seperated by newlines, prints a hierarchical view of the dependencies.
+Given a dependency graph in the form of a file that contains entries '"X->Y"', stating that X depends on Y. separated by newlines, prints a hierarchical view of the dependencies.
 
 If A depends on B and C, and B depends on C and D 
 
@@ -20,14 +20,17 @@ A
 \_ C
 ```
 
-to run clone the repo and simply run the following gradle task
+
+## Usage
+1. Clone the repo
+2. Run the following gradle task
 
 ```
 ./gradlew printGraph
 ```
 
-which defaults to loading the data in graph.txt and starting on node A.
-However if you wish to load a different file or start with another node simply provide the override system properties like so.
+This defaults to filePath=src/test/resources/graph.txt and startNode=A
+If you wish to load a different file or start with another node simply provide the override system properties like so.
 
 ```
 ./gradlew printGraph -DfilePath=src/test/resources/circular-dep.txt -DstartNode=D

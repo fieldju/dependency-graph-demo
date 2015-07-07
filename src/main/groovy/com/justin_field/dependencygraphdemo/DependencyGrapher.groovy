@@ -1,12 +1,29 @@
 package com.justin_field.dependencygraphdemo
 
+/**
+ * Class containing the methods needed to read a file of relationship data and print the dependency graph of a given node.
+ */
 class DependencyGrapher {
 
     Map<String, Set> dependencies = [:] as HashMap
 
     /**
      * Given a path to a valid file, this will load the data as a map of dependencies keyname to a sets of dependencies
-     * @param filePath
+     *
+     * ex:
+     * A->B
+     * A->C
+     * B->C
+     * B->D
+     *
+     * Will create the following map
+     *
+     * [
+     *      A: [B, C]
+     *      B: [C, D]
+     * ]
+     *
+     * @param filePath, the path to the file containing the relationship data in the form of new line separated X->Y
      */
     void loadDependencies(String filePath) {
         File graphData = new File(filePath)
@@ -54,6 +71,7 @@ class DependencyGrapher {
         deps = deps.sort()
 
         deps.each { String dependency ->
+            // I made and assumption that if we detect a loop that we can just print the looped dep and not recurse
             if (dependencies.containsKey(dependency) && ! visited.contains(dependency)) {
                 printGraph(dependency, depth + 1, visited)
             } else {

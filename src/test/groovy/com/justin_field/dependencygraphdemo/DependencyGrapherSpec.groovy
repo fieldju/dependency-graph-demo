@@ -51,6 +51,6 @@ class DependencyGrapherSpec extends Specification {
             dependencyGraphService.loadDependencies('src/test/resources/circular-dep.txt')
             dependencyGraphService.printGraph('A')
         then:
-            true // infinite loops will stack overflow
+            notThrown(StackOverflowError.class)
     }
 }
