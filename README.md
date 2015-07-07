@@ -19,3 +19,16 @@ A
 | \_ D
 \_ C
 ```
+
+to run clone the repo and simply run the following gradle task
+
+```
+./gradlew printGraph
+```
+
+which defaults to loading the data in graph.txt and starting on node A.
+However if you wish to load a different file or start with another node simply provide the override system properties like so.
+
+```
+./gradles printGraph -DfilePath=src/test/resources/circular-dep.txt -DstartNode=D
+```
