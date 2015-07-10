@@ -52,7 +52,7 @@ class DependencyGrapher {
      * @param depth, the current recurse depth, used to pretty print the tree.
      * @param visited, we need to keep track of were we have been to avoid infinite loops
      */
-    void printGraph(String node, def depth = 0, Set visited = [] as Set) {
+    void printGraph(String node, def depth = 0, Set visited = [], Set dontPrintSet = []) {
         if (!dependencies.containsKey(node)) {
             throw new IllegalArgumentException("Node: $node, is not in the dependency map")
         }
@@ -60,7 +60,7 @@ class DependencyGrapher {
         if (depth == 0) {
             println node
         } else if (depth > 0) {
-            print('|  ' * (depth - 1))
+            (depth - 1).times { print dontPrintSet.contains(it) ? '   ' : '|  '}
             println("|_ $node")
         }
 
@@ -72,11 +72,21 @@ class DependencyGrapher {
         deps.each { String dependency ->
             // I made and assumption that if we detect a loop that we can just print the looped dep and not recurse
             if (dependencies.containsKey(dependency) && ! visited.contains(dependency)) {
+                // lets keep track of the depths that dont have anymore nodes when we recurse
+                if (deps.last() == dependency) {
+                    dontPrintSet.add(depth)
+                }
+                // lets keep track of where we have been when we recurse
                 visited.add(node)
-                printGraph(dependency, depth + 1, visited)
+
+                printGraph(dependency, depth + 1, visited, dontPrintSet)
+
+                // when we exit the recursive call lets remove the node from where we have been
                 visited.remove(node)
+                // and remove the depth from the dont print set
+                dontPrintSet.remove(depth + 1)
             } else {
-                print('|  ' * depth)
+                depth.times { print dontPrintSet.contains(it) ? '   ' : '|  '}
                 if (dependency != deps.last()) {
                     print("|_ $dependency")
                 } else {
