@@ -1,4 +1,4 @@
-package com.justin_field.dependencygraphdemo
+package com.justinfield.dependencygraphdemo
 
 import spock.lang.Specification
 

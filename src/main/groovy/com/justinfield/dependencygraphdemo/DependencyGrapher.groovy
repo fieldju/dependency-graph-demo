@@ -1,4 +1,4 @@
-package com.justin_field.dependencygraphdemo
+package com.justinfield.dependencygraphdemo
 
 /**
  * Class containing the methods needed to read a file of relationship data and print the dependency graph of a given node.

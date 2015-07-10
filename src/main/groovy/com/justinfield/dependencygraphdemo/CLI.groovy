@@ -1,4 +1,4 @@
-package com.justin_field.dependencygraphdemo
+package com.justinfield.dependencygraphdemo
 
 /**
  * Class with main method that I can use in a gradle Java Exec Task execute the DependencyGrapher
@@ -12,7 +12,7 @@ package com.justin_field.dependencygraphdemo
  * task printGraph(type: JavaExec) {
  *      dependsOn 'classes'
  *      classpath = sourceSets.main.runtimeClasspath
- *      main = 'com.justin_field.dependencygraphdemo.CLI'
+ *      main = 'com.justinfield.dependencygraphdemo.CLI'
  *
  *      systemProperties = [
  *          'filePath': System.getProperty('filePath', 'src/test/resources/graph.txt'),
