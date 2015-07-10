@@ -5,10 +5,10 @@ package com.justinfield.dependencygraphdemo
  */
 class DependencyGrapher {
 
-    Map<String, Set> dependencies = [:] as HashMap
+    Map<String, Set> dependencies = [:]
 
     /**
-     * Given a path to a valid file, this will load the data as a map of dependencies keyname to a sets of dependencies
+     * Given a path to a valid file, this will load the data as a map of dependencies keyname to a set of dependencies
      *
      * ex:
      * A->B
@@ -35,7 +35,7 @@ class DependencyGrapher {
         graphData.eachLine { String relationship ->
             relationship.find(/^(\w+)->(\w+)$/) { String fullMatch, String key, String dependency ->
                 if (! dependencies.containsKey(key)) {
-                    dependencies.put(key, [dependency] as HashSet)
+                    dependencies.put(key, [dependency] as Set)
                 } else {
                     Set keyDependencies = dependencies.get(key)
                     keyDependencies.add(dependency)
@@ -52,7 +52,7 @@ class DependencyGrapher {
      * @param depth, the current recurse depth, used to pretty print the tree.
      * @param visited, we need to keep track of were we have been to avoid infinite loops
      */
-    void printGraph(String node, def depth = 0, def visited = [] as Set) {
+    void printGraph(String node, def depth = 0, Set visited = [] as Set) {
         if (!dependencies.containsKey(node)) {
             throw new IllegalArgumentException("Node: $node, is not in the dependency map")
         }
@@ -74,13 +74,15 @@ class DependencyGrapher {
             if (dependencies.containsKey(dependency) && ! visited.contains(dependency)) {
                 visited.add(node)
                 printGraph(dependency, depth + 1, visited)
+                visited.remove(node)
             } else {
                 print('|  ' * depth)
                 if (dependency != deps.last()) {
-                    println("|_ $dependency")
+                    print("|_ $dependency")
                 } else {
-                    println("\\_ $dependency")
+                    print("\\_ $dependency")
                 }
+                println visited.contains(dependency) ? '- circular dependency detected' : ''
             }
         }
     }
