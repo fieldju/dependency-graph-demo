@@ -21,7 +21,7 @@ task printGraph(type: JavaExec) {
     description = 'A simple gradle task that will compile the groovy code and pass along filePath, and startNode system props to the CLI main method'
     dependsOn 'classes'
     classpath = sourceSets.main.runtimeClasspath
-    main = 'com.justin_field.dependencygraphdemo.CLI'
+    main = 'com.justinfield.dependencygraphdemo.CLI'
 
     systemProperties = [
             'filePath': System.getProperty('filePath', 'src/test/resources/graph.txt'),

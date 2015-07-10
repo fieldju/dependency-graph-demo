@@ -1,14 +1,14 @@
-package com.justin_field.dependencygraphdemo
+package com.justinfield.dependencygraphdemo
 
 /**
  * Class containing the methods needed to read a file of relationship data and print the dependency graph of a given node.
  */
 class DependencyGrapher {
 
-    Map<String, Set> dependencies = [:] as HashMap
+    Map<String, Set> dependencies = [:]
 
     /**
-     * Given a path to a valid file, this will load the data as a map of dependencies keyname to a sets of dependencies
+     * Given a path to a valid file, this will load the data as a map of dependencies keyname to a set of dependencies
      *
      * ex:
      * A->B
@@ -35,7 +35,7 @@ class DependencyGrapher {
         graphData.eachLine { String relationship ->
             relationship.find(/^(\w+)->(\w+)$/) { String fullMatch, String key, String dependency ->
                 if (! dependencies.containsKey(key)) {
-                    dependencies.put(key, [dependency] as HashSet)
+                    dependencies.put(key, [dependency] as Set)
                 } else {
                     Set keyDependencies = dependencies.get(key)
                     keyDependencies.add(dependency)
@@ -52,7 +52,7 @@ class DependencyGrapher {
      * @param depth, the current recurse depth, used to pretty print the tree.
      * @param visited, we need to keep track of were we have been to avoid infinite loops
      */
-    void printGraph(String node, def depth = 0, def visited = [] as Set) {
+    void printGraph(String node, def depth = 0, Set visited = [], Set dontPrintSet = []) {
         if (!dependencies.containsKey(node)) {
             throw new IllegalArgumentException("Node: $node, is not in the dependency map")
         }
@@ -60,7 +60,7 @@ class DependencyGrapher {
         if (depth == 0) {
             println node
         } else if (depth > 0) {
-            print('|  ' * (depth - 1))
+            (depth - 1).times { print dontPrintSet.contains(it) ? '   ' : '|  '}
             println("|_ $node")
         }
 
@@ -72,15 +72,27 @@ class DependencyGrapher {
         deps.each { String dependency ->
             // I made and assumption that if we detect a loop that we can just print the looped dep and not recurse
             if (dependencies.containsKey(dependency) && ! visited.contains(dependency)) {
-                visited.add(node)
-                printGraph(dependency, depth + 1, visited)
-            } else {
-                print('|  ' * depth)
-                if (dependency != deps.last()) {
-                    println("|_ $dependency")
-                } else {
-                    println("\\_ $dependency")
+                // lets keep track of the depths that dont have anymore nodes when we recurse
+                if (deps.last() == dependency) {
+                    dontPrintSet.add(depth)
                 }
+                // lets keep track of where we have been when we recurse
+                visited.add(node)
+
+                printGraph(dependency, depth + 1, visited, dontPrintSet)
+
+                // when we exit the recursive call lets remove the node from where we have been
+                visited.remove(node)
+                // and remove the depth from the dont print set
+                dontPrintSet.remove(depth + 1)
+            } else {
+                depth.times { print dontPrintSet.contains(it) ? '   ' : '|  '}
+                if (dependency != deps.last()) {
+                    print("|_ $dependency")
+                } else {
+                    print("\\_ $dependency")
+                }
+                println visited.contains(dependency) ? '- circular dependency detected' : ''
             }
         }
     }
